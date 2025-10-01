@@ -1,0 +1,5 @@
+print("Hello, World!")
+print("This is a sample Python file.")
+print("It contains multiple lines of code.")    
+print("Each line prints a different message.")
+print("This is the last line of the file.")
