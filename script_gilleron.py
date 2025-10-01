@@ -1,82 +1,87 @@
-print("Here you have our quiz !")
-print("\n-------")
+import sys # Utile pour quitter proprement en cas de succès
 
-# --- Question 1 ---
-question_1 = "Quelle est la racine carré de 4 ? "
-reponse_1 = "2"
-tentatives = 0
-max_tentatives = 3
+class Question:
+    """Représente une seule question de quiz avec sa logique de tentatives."""
 
+    def __init__(self, texte, reponse_attendue, max_tentatives=3):
+        """Initialise la question avec son texte et sa réponse."""
+        self.texte = texte
+        self.reponse_attendue = reponse_attendue.lower()
+        self.max_tentatives = max_tentatives
+        self.tentatives_actuelles = 0
+        self.reussie = False
 
-print(f"Question 1 : {question_1}")
+    def poser(self, numero_question):
+        """Pose la question à l'utilisateur et gère les tentatives."""
+        print(f"\n--- Question {numero_question} ---")
+        print(f"Question {numero_question} : {self.texte}")
+        
+        while self.tentatives_actuelles < self.max_tentatives:
+            # 1. Demande la réponse
+            reponse_utilisateur = input(
+                f"Tentative {self.tentatives_actuelles + 1}/{self.max_tentatives}. Votre réponse : "
+            )
+            print(f"Your answer : {reponse_utilisateur}")
+            
+            # Normalise la réponse pour la vérification (comme dans votre question 3)
+            reponse_utilisateur_normalisee = reponse_utilisateur.lower()
 
-while tentatives < max_tentatives:
-    # 1. On demande la réponse et on compte l'essai
-    reponse_utilisateur_1 = input(f"Tentative {tentatives + 1}/{max_tentatives}. Votre réponse : ")
-    print(f"Your answer : {reponse_utilisateur_1}")
-    
-    # 2. Vérification de la réponse
-    if reponse_utilisateur_1 == reponse_1:
-        print("Good job! This is the right answer")
-        break  # Sort de la boucle si la réponse est correcte
-    else:
-        print("Too bad! That is not the correct answer")
-        tentatives += 1  # Incrémente le compteur seulement si la réponse est fausse
+            # 2. Vérifie la réponse
+            if reponse_utilisateur_normalisee == self.reponse_attendue:
+                print("Good job! This is the right answer")
+                self.reussie = True
+                return True # Réponse correcte
+            else:
+                print("Too bad! That is not the correct answer")
+                self.tentatives_actuelles += 1
 
-# Message si le joueur a échoué (uniquement si le compteur est à 3)
-if tentatives == max_tentatives and reponse_utilisateur_1 != reponse_1:
-    print(f"Dommage ! La bonne réponse était {reponse_1}.")
+        # Si la boucle est terminée sans succès (tentatives épuisées)
+        print(f"Dommage ! La bonne réponse était {self.reponse_attendue.capitalize()}.")
+        return False # Échec de la question
 
+class Quiz:
+    """Gère l'ensemble du quiz et la séquence des questions."""
 
-# --- Question 2 ---
-print("\n-------")
-question_2 = "Année de création d'Apple ? "
-reponse_2 = "1976"
-tentatives = 0
-max_tentatives = 3
+    def __init__(self, titre="Notre super Quiz !"):
+        """Initialise le quiz avec une liste de questions vide."""
+        self.titre = titre
+        self.questions = []
+        self.score = 0
 
-print(f"Question 2 : {question_2}")
+    def ajouter_question(self, question):
+        """Ajoute un objet Question à la liste du quiz."""
+        self.questions.append(question)
 
-while tentatives < max_tentatives:
-    reponse_utilisateur_2 = input(f"Tentative {tentatives + 1}/{max_tentatives}. Votre réponse : ")
-    print(f"Your answer : {reponse_utilisateur_2}")
+    def demarrer(self):
+        """Exécute toutes les questions du quiz."""
+        print(f"Here you have {self.titre}")
+        
+        for i, question in enumerate(self.questions):
+            # i est l'index (commence à 0), donc on utilise i + 1 pour le numéro de question
+            if question.poser(i + 1):
+                self.score += 1
+        
+        # Affichage du résultat final
+        print("\n" + "="*20)
+        print("Congratulations! You have completed the quiz!")
+        print(f"Votre score final est de {self.score} sur {len(self.questions)}.")
+        print("="*20)
 
-    if reponse_utilisateur_2 == reponse_2:
-        print("Good job! This is the right answer")
-        break
-    else:
-        print("Too bad! That is not the correct answer")
-        tentatives += 1
+# --- Création du Quiz et des Questions ---
 
-if tentatives == max_tentatives and reponse_utilisateur_2 != reponse_2:
-    print(f"Dommage ! La bonne réponse était {reponse_2}.")
+# 1. Créer une instance du Quiz
+mon_quiz = Quiz()
 
+# 2. Créer les instances des Questions
+# Note : Nous n'avons plus besoin de répéter le même code pour chaque question.
+q1 = Question("Quelle est la racine carré de 4 ?", "2")
+q2 = Question("Année de création d'Apple ?", "1976")
+q3 = Question("Quel est le nom du créateur principal de TESLA? ", "elon musk") # La gestion de la casse est faite dans la classe Question
 
-# --- Question 3 ---
+# 3. Ajouter les questions au Quiz
+mon_quiz.ajouter_question(q1)
+mon_quiz.ajouter_question(q2)
+mon_quiz.ajouter_question(q3)
 
-print("\n-------")
-question_3 = "Quel est le nom du créateur principal de TESLA? "
-reponse_3 = "elon musk"
-tentatives = 0
-max_tentatives = 3
-
-print(f"Question 3 : {question_3}")
-
-while tentatives < max_tentatives:
-    reponse_utilisateur_3 = input(f"Tentative {tentatives + 1}/{max_tentatives}. Votre réponse : ")
-    reponse_utilisateur_3_lower = reponse_utilisateur_3.lower()
-    print(f"Your answer : {reponse_utilisateur_3_lower}")
-
-    # Vérification avec .lower() et OR pour deux réponses possibles
-    if reponse_utilisateur_3_lower == reponse_3:
-        print("Good job! This is the right answer")
-        break
-    else:
-        print("Too bad! That is not the correct answer")
-        tentatives += 1
-
-if tentatives == max_tentatives and reponse_utilisateur_3_lower != reponse_3:
-    print(f"Dommage ! La bonne réponse était {reponse_3}.")
-
-print("\n-------")
-print("Congratulations! You have completed the quiz!")
+# 4. Démarrer le Quiz
+mon_quiz.demarrer()
